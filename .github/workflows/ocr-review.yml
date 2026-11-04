@@ -1,0 +1,48 @@
+name: OpenCodeReview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ocr-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      OCR_NO_UPDATE: '1'
+    steps:
+      - name: Allow OCR installer script
+        run: npm config set allow-scripts=@alibaba-group/open-code-review --location=user
+
+      - name: Check secret availability
+        env:
+          TOKEN: ${{ secrets.OCR_LLM_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            echo "Secret is available"
+          else
+            echo "Secret is missing"
+            exit 1
+          fi
+
+      - name: Review pull request
+        uses: alibaba/open-code-review@v1.13.3
+        with:
+          ocr_version: '1.13.3'
+          llm_url: ${{ vars.OCR_LLM_URL }}
+          llm_auth_token: ${{ secrets.OCR_LLM_TOKEN }}
+          llm_auth_header: api-key
+          llm_model: ${{ vars.OCR_LLM_MODEL }}
+          llm_use_anthropic: 'false'
+          llm_protocol: openai-responses
+          llm_extra_body: '{}'
+          language: Chinese
+          upload_artifacts: 'false'
