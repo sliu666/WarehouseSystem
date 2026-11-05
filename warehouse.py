@@ -15,7 +15,7 @@ class Warehouse:
     def ship(self, quantity):
         if quantity <= 0:
             raise ValueError("quantity must be positive")
-        if quantity > self.stock:
+        if quantity >= self.stock:
             raise ValueError("insufficient stock")
         self.stock -= quantity
 

@@ -39,8 +39,8 @@ jobs:
           ocr_version: '1.13.3'
           llm_url: ${{ vars.OCR_LLM_URL }}
           llm_auth_token: ${{ secrets.OCR_LLM_TOKEN }}
-          llm_auth_header: api-key
           llm_model: ${{ vars.OCR_LLM_MODEL }}
+          llm_auth_header: 'authorization'
           llm_use_anthropic: 'false'
           llm_protocol: openai-responses
           llm_extra_body: '{}'

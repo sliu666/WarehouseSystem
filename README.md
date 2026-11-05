@@ -19,6 +19,8 @@ python -m unittest -v test_warehouse
 
 先使用相同的模型配置运行 `ocr llm test`；不同端点的认证方式、协议和请求字段可能不同，按实际情况调整工作流。不要提交令牌。如果端点地址敏感，也应保存为 Secret 并将工作流中的 `vars.OCR_LLM_URL` 改为 `secrets.OCR_LLM_URL`。
 
+OCR `1.13.3` 的 `llm_auth_header` 仅接受 `x-api-key` 或 `authorization`；Azure 的 `api-key` 应通过 `llm_extra_headers: api-key=${{ secrets.OCR_LLM_TOKEN }}` 传入，否则工作流会在配置阶段失败。
+
 工作流使用自动提供的 `GITHUB_TOKEN` 发布评论，仓库及组织策略需允许 `contents: read` 和 `pull-requests: write`。将程序、测试和 `.github/workflows/ocr-review.yml` 先提交并推送到 PR 的目标分支；当前仓库的目标分支为 `master`。无需额外配置 checkout。工作流固定 OCR 版本为 `1.13.3`，正式使用时建议将 Action 标签替换为核验过的完整 commit SHA。
 
 ## 演示审查
